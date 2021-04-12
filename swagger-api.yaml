@@ -1,0 +1,130 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/jyadegari/expenses/1.0.0
+info:
+  description: Expenses tracker API
+  version: "1.0.0"
+  title: Expenses
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    
+tags: 
+  - name: Expense
+    description: This is a expense related operation
+  
+paths:
+  /expense/{expenseId}:
+    get:
+      description: Get a specified expense by id
+      tags: 
+        - Expense
+      parameters: 
+        - in: path
+          name: expenseId
+          required: true
+          schema:
+            type: integer
+            example: 78
+      responses:
+        200:
+          description: shows selected expense based on expense id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        400:
+          description: bad input parameter
+        
+    put:
+      tags: 
+        - Expense
+      description: Update an existing expense
+      parameters: 
+        - in: path
+          name: expenseId
+          required: true
+          schema:
+            type: integer
+            example: 78
+            
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expense'
+        description: Update an expense
+      responses:
+        200:
+          description: Shows updated expense
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        400:
+          description: bad input parameter
+      
+
+
+  /expense:
+    get:
+      description: Get all the expenses
+      tags: 
+        - Expense
+      responses:
+        200:
+          description: Shows list of all expenses.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+
+    post:
+      tags: 
+        - Expense
+      description: Adds an expense to the list of expenses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expense'
+        description: Add an expense
+        
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+        
+components:
+
+  schemas:
+    Expense:
+      type: object
+      required:
+        - name
+        - amount
+        - date
+      properties:
+        id: 
+          type: integer
+          example: 89
+        name:
+          type: string
+          example: bus ticket
+        description:
+          type: string
+          example: gives some more details about expenses
+        amount:
+          type: number
+          format: double
+          example: 45.5
+        date: 
+          type: string
+          example: 2018-1-2
