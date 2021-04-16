@@ -1,0 +1,135 @@
+openapi: 3.0.0
+info:
+  description: Expenses tracker API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Expenses
+  version: 1.0.0
+servers:
+- description: SwaggerHub API Auto Mocking
+  url: https://virtserver.swaggerhub.com/jyadegari/expenses/1.0.0
+tags:
+- description: This is a expense related operation
+  name: Expense
+paths:
+  /expense/{expenseId}:
+    get:
+      description: Get a specified expense by id
+      parameters:
+      - explode: false
+        in: path
+        name: expenseId
+        required: true
+        schema:
+          example: 78
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+          description: shows selected expense based on expense id.
+        "400":
+          description: bad input parameter
+      tags:
+      - Expense
+      x-accepts: application/json
+    put:
+      description: Update an existing expense
+      parameters:
+      - explode: false
+        in: path
+        name: expenseId
+        required: true
+        schema:
+          example: 78
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expense'
+        description: Update an expense
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+          description: Shows updated expense
+        "400":
+          description: bad input parameter
+      tags:
+      - Expense
+      x-contentType: application/json
+      x-accepts: application/json
+  /expense:
+    get:
+      description: Get all the expenses
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Expense'
+                type: array
+          description: Shows list of all expenses.
+      tags:
+      - Expense
+      x-accepts: application/json
+    post:
+      description: Adds an expense to the list of expenses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expense'
+        description: Add an expense
+      responses:
+        "201":
+          description: item created
+        "400":
+          description: invalid input, object invalid
+        "409":
+          description: an existing item already exists
+      tags:
+      - Expense
+      x-contentType: application/json
+      x-accepts: application/json
+components:
+  schemas:
+    Expense:
+      example:
+        date: 2018-1-2
+        amount: 45.5
+        name: bus ticket
+        description: gives some more details about expenses
+        id: 89
+      properties:
+        id:
+          example: 89
+          type: integer
+        name:
+          example: bus ticket
+          type: string
+        description:
+          example: gives some more details about expenses
+          type: string
+        amount:
+          example: 45.5
+          format: double
+          type: number
+        date:
+          example: 2018-1-2
+          type: string
+      required:
+      - amount
+      - date
+      - name
+      type: object
+
