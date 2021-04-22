@@ -35,4 +35,4 @@ build/
 .idea/
 
 ### H2 Databse file ###
-./data
+data/
