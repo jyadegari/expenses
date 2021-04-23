@@ -20,11 +20,10 @@ import java.util.List;
 @RequestMapping("/v1/api")
 public class ExpensesController {
 
+    private final ExpensesService expensesService;
 
-    private final ExpensesService service;
-
-    public ExpensesController(ExpensesService service) {
-        this.service = service;
+    public ExpensesController(ExpensesService expensesService) {
+        this.expensesService = expensesService;
     }
 
     @ApiOperation(value = "Get all expenses")
@@ -35,7 +34,7 @@ public class ExpensesController {
             content = @Content(schema = @Schema(implementation = Expense.class)))
     @GetMapping(value = "/expense", produces = {"application/json"})
     public ResponseEntity<List<Expense>> getAllExpense() {
-        return ResponseEntity.ok(service.getAllExpenses());
+        return ResponseEntity.ok(expensesService.getAllExpenses());
     }
 
     @ApiOperation(value = "Get an expense by provide Id")
@@ -49,7 +48,7 @@ public class ExpensesController {
             @ApiParam(value = "Id for the expense you need to retrieve", required = true)
             @PathVariable("expenseId") int expenseId) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(service.findOneById(expenseId));
+        return ResponseEntity.status(HttpStatus.OK).body(expensesService.findOneById(expenseId));
     }
 
     @ApiOperation(value = "Add or update an expense")
@@ -60,7 +59,11 @@ public class ExpensesController {
             content = @Content(schema = @Schema(implementation = Expense.class)))
     @PostMapping(value = "/expense", consumes = {"application/json"})
     public ResponseEntity<Expense> addOrUpdateExpense(@Valid @RequestBody Expense expense) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.addExpense(expense));
+
+        Expense savedExpense = expensesService.addExpense(expense);
+
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedExpense);
     }
 
     @ApiOperation(value = "Delete an expense by provide Id")
@@ -70,10 +73,9 @@ public class ExpensesController {
     public ResponseEntity<String> deleteExpense(
             @ApiParam(value = "Id for the expense you need to delete", required = true)
             @PathVariable int expenseId) {
-        service.deleteExpense(expenseId);
+        expensesService.deleteExpense(expenseId);
         return ResponseEntity.ok("Expense with id: " + expenseId + " deleted.");
     }
-
 
 
 }
