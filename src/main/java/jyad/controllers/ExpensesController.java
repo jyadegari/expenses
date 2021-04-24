@@ -9,21 +9,32 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jyad.model.Expense;
 import jyad.services.ExpensesService;
+import jyad.services.lucene.DocumentIndexer;
+import jyad.services.lucene.DocumentLocator;
+import org.apache.lucene.document.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/api")
+@RequestMapping("/api")
 public class ExpensesController {
 
     private final ExpensesService expensesService;
+    private final DocumentIndexer documentIndexer;
+    private final DocumentLocator documentLocator;
 
-    public ExpensesController(ExpensesService expensesService) {
+
+    public ExpensesController(ExpensesService expensesService,
+                              DocumentIndexer documentIndexer,
+                              DocumentLocator documentLocator) {
         this.expensesService = expensesService;
+        this.documentIndexer = documentIndexer;
+        this.documentLocator = documentLocator;
     }
 
     @ApiOperation(value = "Get all expenses")
@@ -62,6 +73,16 @@ public class ExpensesController {
 
         Expense savedExpense = expensesService.addExpense(expense);
 
+        try {
+            if (expense.getId() != null) {
+                documentIndexer.updateDocumentIndex(savedExpense.getId().toString(), savedExpense);
+            } else {
+                documentIndexer.indexDocument(documentIndexer.createIndexDocument(savedExpense));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedExpense);
     }
@@ -74,6 +95,14 @@ public class ExpensesController {
             @ApiParam(value = "Id for the expense you need to delete", required = true)
             @PathVariable int expenseId) {
         expensesService.deleteExpense(expenseId);
+
+        try {
+            documentIndexer.deleteDocument(String.valueOf(expenseId));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         return ResponseEntity.ok("Expense with id: " + expenseId + " deleted.");
     }
 
