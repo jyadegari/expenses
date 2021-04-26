@@ -23,7 +23,7 @@ public class DocumentLocator {
     @Value("${lucene.index-directory:./data/lucene}")
     private String indexDirectory;
 
-
+    @SuppressWarnings("all")
     public Document getDocumentById(String docId) throws IOException {
         Document retVal = null;
         try (

@@ -22,8 +22,9 @@ public class DocumentIndexer {
     private String indexDirectory;
 
 
+    @SuppressWarnings("all")
     public void deleteAllIndexes() throws IOException {
-        IndexWriter writer = null;
+        IndexWriter writer ;
         try (Directory indexWriteToDir = FSDirectory.open(Paths.get(indexDirectory))) {
             writer = new IndexWriter(indexWriteToDir, new IndexWriterConfig());
             writer.deleteAll();
@@ -35,7 +36,7 @@ public class DocumentIndexer {
     }
 
     public void deleteDocument(String docId) throws IOException {
-        IndexWriter writer = null;
+        IndexWriter writer ;
         try (Directory indexWriteToDir = FSDirectory.open(Paths.get(indexDirectory))) {
 
             writer = new IndexWriter(indexWriteToDir, new IndexWriterConfig());
@@ -49,8 +50,8 @@ public class DocumentIndexer {
     }
 
     public void updateDocumentIndex(String docId, Expense docToUpdate) throws IOException {
-        Document docIndexToUpdate = createIndexDocument(docToUpdate);
-        IndexWriter writer = null;
+        var docIndexToUpdate = createIndexDocument(docToUpdate);
+        IndexWriter writer;
 
         try (Directory indexWriteToDir = FSDirectory.open(Paths.get(indexDirectory))) {
             writer = new IndexWriter(indexWriteToDir, new IndexWriterConfig());
@@ -64,7 +65,7 @@ public class DocumentIndexer {
 
 
     public void indexDocument(Document doc) throws IOException {
-        IndexWriter writer = null;
+        IndexWriter writer;
 
         try (Directory indexWriteToDir = FSDirectory.open(Paths.get(indexDirectory))) {
             writer = new IndexWriter(indexWriteToDir, new IndexWriterConfig());
@@ -77,7 +78,7 @@ public class DocumentIndexer {
 
     public Document createIndexDocument(Expense expenseDoc) {
 
-        Document document = new Document();
+        var document = new Document();
 
         IndexableField idField = new StringField("id", expenseDoc.getId().toString(), Field.Store.YES);
         IndexableField nameField = new TextField("name", expenseDoc.getName(), Field.Store.YES);

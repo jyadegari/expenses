@@ -17,4 +17,4 @@ cd expenses
 
 see the api documentation at 
 
-[Api Documentation] (http://localhost:8080/swagger-ui/index.html)
+Api Documentation (http://localhost:8080/swagger-ui/index.html)
