@@ -7,11 +7,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jyad.exceptions.LuceneIndexingException;
 import jyad.model.Expense;
 import jyad.services.ExpensesService;
 import jyad.services.lucene.DocumentIndexer;
 import jyad.services.lucene.DocumentLocator;
-import org.apache.lucene.document.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,7 +71,7 @@ public class ExpensesController {
     @PostMapping(value = "/expense", consumes = {"application/json"})
     public ResponseEntity<Expense> addOrUpdateExpense(@Valid @RequestBody Expense expense) {
 
-        Expense savedExpense = expensesService.addExpense(expense);
+        var savedExpense = expensesService.addExpense(expense);
 
         try {
             if (expense.getId() != null) {
@@ -80,7 +80,7 @@ public class ExpensesController {
                 documentIndexer.indexDocument(documentIndexer.createIndexDocument(savedExpense));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new LuceneIndexingException("error adding expense to index");
         }
 
 
@@ -99,7 +99,7 @@ public class ExpensesController {
         try {
             documentIndexer.deleteDocument(String.valueOf(expenseId));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new LuceneIndexingException("error deleting expense from index");
         }
 
 

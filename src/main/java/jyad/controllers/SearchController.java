@@ -1,6 +1,7 @@
 package jyad.controllers;
 
 
+import jyad.exceptions.LuceneIndexingException;
 import jyad.model.LuceneExpense;
 import jyad.services.lucene.DocumentLocator;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class SearchController {
         try {
             foundExpenses = documentLocator.searchForDocument(query);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new LuceneIndexingException("error finding expense from index");
         }
        return ResponseEntity.ok(foundExpenses);
     }
