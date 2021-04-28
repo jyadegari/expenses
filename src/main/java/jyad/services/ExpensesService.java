@@ -6,6 +6,7 @@ import jyad.model.Expense;
 import jyad.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -40,5 +41,7 @@ public class ExpensesService {
         return repository.findAll();
     }
 
-
+    public List<Expense> findByDateBetween(LocalDate start, LocalDate end) {
+        return repository.findByDateBetween(start, end);
+    }
 }
